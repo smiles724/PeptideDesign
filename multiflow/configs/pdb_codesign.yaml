@@ -1,0 +1,64 @@
+defaults:
+ - base
+ - _self_
+
+data:
+  task: hallucination
+  dataset: pdb
+  sampler:
+    # Setting for 40GB GPUs
+    max_batch_size: 64
+    max_num_res_squared: 400_000
+    # Setting for 80GB GPUs
+    # max_batch_size: 100
+    # max_num_res_squared: 800_000
+
+model:
+  aatype_pred_num_tokens: 20
+  transformer_dropout: 0.2
+  node_features:
+    use_mlp: True
+    embed_aatype: True
+    embed_bb_angle: True
+  llm_name: esm2_t33_650M_UR50D
+  llm:
+    d_model: ${model.node_embed_size}
+    n_enc_layers: 3
+    n_dec_layers: 3
+    use_esm_alphabet: True
+    sample_deterministic: False
+    dropout: 0.15
+
+interpolant:
+  codesign_forward_fold_prop: 0.1
+  codesign_inverse_fold_prop: 0.1
+  aatypes:
+    corrupt: True
+    temp: 0.1
+    do_purity: True
+    noise: 20.0
+    interpolant_type: uniform  # masking
+  angles:
+    corrupt: True
+    sample_schedule: exp
+    do_purify: False
+
+experiment:
+  debug: False   # debug or not
+  raw_state_dict_reload: null
+  training:
+    aatypes_loss_weight: 1.0
+    aatypes_loss_llm_weight: 1.0
+    torsion_loss_weight: 0.1
+  num_devices: 4   # number of gpus
+  warm_start: null
+  wandb:
+    name: codesign_${data.dataset}
+  trainer:
+    check_val_every_n_epoch: 6
+    accumulate_grad_batches: 2
+  checkpointer:
+    save_top_k: -1
+    every_n_epochs: 50
+    save_on_train_epoch_end: True
+    monitor: null
