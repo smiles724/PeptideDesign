@@ -1,4 +1,4 @@
-name: multiflow
+name: dflow
 channels:
   - pytorch
   - nvidia

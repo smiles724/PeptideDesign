@@ -8,7 +8,7 @@
 #SBATCH --gres=gpu:1            # Requesting 1 GPUs
 #SBATCH --cpus-per-gpu=8        # Allocating 8 CPUs per GPU
 #SBATCH --mem-per-gpu=80G       # Allocating 80 GB memory per GPU
-#SBATCH --time=4-00:00:00       # Max run time of 1 days
+#SBATCH --time=4-00:00:00       # Max run time of 4 days
 #
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user="fang.wu@arcinstitute.org"
@@ -18,4 +18,4 @@ source /opt/conda/etc/profile.d/conda.sh
 conda activate multiflow   # Replace with your actual conda environment
 
 # Run the Python script
-python -W ignore multiflow/experiments/train_pep_flows.py
+python -W ignore dflow/experiments/train_pep_flows.py

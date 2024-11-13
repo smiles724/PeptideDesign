@@ -1,0 +1,121 @@
+model:
+  ckpt_path: ./flow.ckpt
+  node_embed_size: 128
+  edge_embed_size: 64
+  net_type: frameflow
+  rigids_scaling: True
+  transformer_dropout: 0.25
+  aatype_pred_num_tokens: 20
+  node_features:
+    c_s: ${model.node_embed_size}
+    c_pos_emb: 128
+    c_timestep_emb: 128
+    max_num_res: 2000
+    embed_chain: False   # no chain information
+    embed_angle: True
+  edge_features:
+    single_bias_transition_n: 2
+    c_s: ${model.node_embed_size}
+    c_p: ${model.edge_embed_size}
+    relpos_k: 64
+    feat_dim: 64
+    num_bins: 22
+    embed_chain: False
+    embed_diffuse_mask: True
+  ipa:
+    c_s: ${model.node_embed_size}
+    c_z: ${model.edge_embed_size}
+    c_hidden: 128
+    no_heads: 8
+    no_qk_points: 8
+    no_v_points: 12
+    seq_tfmr_num_heads: 4
+    seq_tfmr_num_layers: 4
+    num_blocks: 6
+    dropout: 0.0
+    fixed_receptor: True
+  llm:
+    use: False
+    name: esm2_t33_650M_UR50D
+    cfg:
+      d_model: ${model.node_embed_size}
+      n_enc_layers: 3
+      n_dec_layers: 3
+      use_esm_alphabet: True
+      dropout: 0.25
+  interpolant:
+    min_t: 1.e-2
+    t_normalization_clip: 0.9
+    aatypes:
+      interpolant_type: masking    # discrete FM
+      simplex_value: 5.0
+      temp: 0.1
+      noise: 20.0
+    rots:
+      train_schedule: linear
+      sample_schedule: exp
+      exp_rate: 10
+    trans:
+      train_schedule: linear
+      sample_schedule: linear
+      sigma: 1.0
+    sampling:
+      num_timesteps: 100
+
+sample:
+  ckpt_path: dflow.pt
+  output: ./pep_output
+  device: cuda
+  num_steps: 50   # increase steps will be slightly better
+  num_samples: 16
+  angle_purify: True
+  llm: False
+  x_mirror: False
+  y_mirror: False
+  z_mirror: False
+
+train:
+  debug: False
+  project_name: pepflow
+  num_workers: 4
+  logdir: ./logs
+  device: cuda
+  loss_weights:
+    trans_loss: 0.5 # 1.0 for dreamfold, 0.05 for yim
+    rot_loss: 0.5 # 1.0 for dreamfold, 0.5 for yim
+    bb_atom_loss: 0.25
+    seqs_loss: 1.0
+    seqs_loss_ipa: 1.0
+    angle_loss: 1.0
+    torsion_loss: 0.5
+  max_iters: 40000000
+  save_freq: 20000
+  batch_size: 32
+  accum_grad: 1
+  seed: 2024
+  max_grad_norm: 100.0
+  optimizer:
+    type: adam
+    lr: 5.e-4
+    weight_decay: 0.0
+    beta1: 0.9
+    beta2: 0.999
+  scheduler:
+    type: plateau
+    factor: 0.8
+    patience: 10
+    min_lr: 5.e-6
+
+dataset:
+  train:
+    type: peprec
+    structure_dir: ../pepmerge
+    dataset_dir: ../pep_cache
+    name: pep_pocket_all   # for d-peptide only
+    reset: False
+  val:
+    type: peprec
+    structure_dir: ../pepmerge
+    dataset_dir: ../pep_cache
+    name: pep_pocket_test
+    reset: False

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="74c1c696-c0e2-4fb0-8a01-011b7ea58e94" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/dflow/models/adjoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dflow/models/edge.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dflow/models/node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/ControlFlow.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_chirality.py" beforeDir="false" afterPath="$PROJECT_DIR$/check_chirality.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/distillation.clusters" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/distillation_clusters.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/distillation_metadata.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/pdb.clusters" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/pdb_metadata.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/pdb_redesigned.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/test_set_clusters.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/test_set_metadata.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata/test_set_pdb_ids.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow.yml" beforeDir="false" afterPath="$PROJECT_DIR$/multiflow.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/analysis/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/configs/base.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/configs/datasets.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/configs/model.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/configs/pdb_codesign.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/configs/pep_codesign.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/all_atom.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/datasets.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/errors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/interpolant.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/mmcif_parsing.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/parsers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/pep_constants.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/pep_dataloader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/protein.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/protein_dataloader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/residue_constants.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/so3_utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/torsion.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/torus.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/data/writers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/experiments/inference_pep.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/experiments/train_pep_ddp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/experiments/train_pep_flows.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/experiments/train_se3_flows.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/experiments/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/models.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/edge_feature_net.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/flow_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/flow_model_pep.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/flow_module.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/folding_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/geometry.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/ipa_pytorch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/llm/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/llm/esm2_adapter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/node_feature_net.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/multiflow/models/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/openfold/data/data_transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/openfold/data/data_transforms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pdb_flow.sh" beforeDir="false" afterPath="$PROJECT_DIR$/pdb_flow.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pep_flow.sh" beforeDir="false" afterPath="$PROJECT_DIR$/pep_flow.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2nm7tK6elVupdjoNMZOyCBYM1du" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/zh397/Desktop/ProtddG-main"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zh397\Desktop\D-Flow\dflow\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zh397\Desktop\D-Flow\dflow\models" />
+      <recent name="C:\Users\zh397\Desktop\D-Flow\dflow\models\old" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="74c1c696-c0e2-4fb0-8a01-011b7ea58e94" name="Changes" comment="" />
+      <created>1729566611066</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729566611066</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

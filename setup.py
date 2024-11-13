@@ -1,15 +1,15 @@
 import setuptools as tools
 
 tools.setup(
-    name="multiflow",
+    name="dflow",
     packages=[
         'openfold',
-        'multiflow',
+        'dflow',
         'ProteinMPNN'
     ],
     package_dir={
         'openfold': './openfold',
-        'multiflow': './multiflow',
+        'dflow': './dflow',
         'ProteinMPNN': './ProteinMPNN',
     },
 )

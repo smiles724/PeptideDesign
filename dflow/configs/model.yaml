@@ -1,0 +1,33 @@
+model:
+  node_embed_size: 128
+  edge_embed_size: 64
+  symmetric: False
+  transformer_dropout: 0.2
+  aatype_pred_num_tokens: 20
+  node_features:
+    c_s: ${model.node_embed_size}
+    c_pos_emb: 128
+    c_timestep_emb: 128
+    max_num_res: 2000
+    embed_chain: False   # no chain information
+    embed_angle: True
+  edge_features:
+    single_bias_transition_n: 2
+    c_s: ${model.node_embed_size}
+    c_p: ${model.edge_embed_size}
+    relpos_k: 64
+    feat_dim: 64
+    num_bins: 22
+    embed_chain: False
+    embed_diffuse_mask: True    
+  ipa:
+    c_s: ${model.node_embed_size}
+    c_z: ${model.edge_embed_size}
+    c_hidden: 128
+    no_heads: 8
+    no_qk_points: 8
+    no_v_points: 12
+    seq_tfmr_num_heads: 4
+    seq_tfmr_num_layers: 4
+    num_blocks: 6
+    dropout: 0.0

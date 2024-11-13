@@ -10,7 +10,7 @@ from openfold.config import NUM_RES, NUM_EXTRA_SEQ, NUM_TEMPLATES, NUM_MSA_SEQ
 from openfold.np import residue_constants as rc
 from openfold.utils.rigid_utils import Rotation, Rigid
 from openfold.utils.tensor_utils import (tree_map, tensor_tree_map, batched_gather, )
-from multiflow.data.torsion import _get_torsion
+from dflow.data.torsion import _get_torsion
 
 MSA_FEATURE_NAMES = ["msa", "deletion_matrix", "msa_mask", "msa_row_mask", "bert_mask", "true_msa", ]
 
@@ -649,7 +649,7 @@ def get_chi_atom_indices():
 
 
 @curry1
-def atom37_to_torsion_angles_(protein, prefix="", bb_angles=True):   # return angles instead of sin/cos
+def atom37_to_torsion_angles_(protein, prefix="", all_angles=False):   # return angles instead of sin/cos
     aatype = torch.clamp(protein[prefix + "aatype"], max=20)  # no unknown type
     all_atom_positions = protein[prefix + "all_atom_positions"]    # (L, 37, 3)
     all_atom_mask = protein[prefix + "all_atom_mask"]
@@ -672,21 +672,21 @@ def atom37_to_torsion_angles_(protein, prefix="", bb_angles=True):   # return an
     chi_angle_atoms_mask = torch.prod(chi_angle_atoms_mask, dim=-1, dtype=chi_angle_atoms_mask.dtype)
     chis_mask = chis_mask * chi_angle_atoms_mask
 
-    if bb_angles:
+    psi_atom_pos = torch.cat([all_atom_positions[..., :3, :], all_atom_positions[..., 4:5, :]], dim=-2, )  # (L, 4, 3), O(i) in AF, but N(i+1) in textbook
+    psi_mask = (torch.prod(all_atom_mask[..., :3], dim=-1, dtype=all_atom_mask.dtype) * all_atom_mask[..., 4])  # (L, )
+    if all_angles:   # include omega & phi
         pre_omega_atom_pos = torch.cat([prev_all_atom_positions[..., 1:3, :], all_atom_positions[..., :2, :]], dim=-2, )  # (L, 4, 3), C_a(i-1)/C(i-1)
         phi_atom_pos = torch.cat([prev_all_atom_positions[..., 2:3, :], all_atom_positions[..., :3, :]], dim=-2, )  # (L, 4, 3), C(i-1)
-        psi_atom_pos = torch.cat([all_atom_positions[..., :3, :], all_atom_positions[..., 4:5, :]], dim=-2, )  # (L, 4, 3), O(i) in AF, but N(i+1) in textbook
 
         pre_omega_mask = torch.prod(prev_all_atom_mask[..., 1:3], dim=-1) * torch.prod(all_atom_mask[..., :2], dim=-1)  # (L, )
-        phi_mask = prev_all_atom_mask[..., 2] * torch.prod(all_atom_mask[..., :3], dim=-1, dtype=all_atom_mask.dtype)  # (L, )
-        psi_mask = (torch.prod(all_atom_mask[..., :3], dim=-1, dtype=all_atom_mask.dtype) * all_atom_mask[..., 4])  # (L, )
+        phi_mask = prev_all_atom_mask[..., 2:3] * torch.prod(all_atom_mask[..., :3], dim=-1, dtype=all_atom_mask.dtype)  # (L, )
 
         # (L, 7, 4, 3)
         torsions_atom_pos = torch.cat([pre_omega_atom_pos[..., None, :, :], phi_atom_pos[..., None, :, :], psi_atom_pos[..., None, :, :], chis_atom_pos, ], dim=-3, )
         torsion_angles_mask = torch.cat([pre_omega_mask[..., None], phi_mask[..., None], psi_mask[..., None], chis_mask, ], dim=-1, )    # (L, 7)
     else:
-        torsions_atom_pos = chis_atom_pos  # (L, 4, 4, 3)
-        torsion_angles_mask = chis_mask
+        torsions_atom_pos = torch.cat([psi_atom_pos[..., None, :, :], chis_atom_pos, ], dim=-3, )  # (L, 5, 4, 3)
+        torsion_angles_mask = torch.cat([psi_mask[..., None], chis_mask, ], dim=-1, )
 
     torsion_angles = _get_torsion(torsions_atom_pos[..., 0, :], torsions_atom_pos[..., 1, :], torsions_atom_pos[..., 2, :], torsions_atom_pos[..., 3, :])    # (L, 7)
     torsion_angles = torsion_angles.nan_to_num(posinf=0.)   # 0 for non-exist angles
@@ -695,10 +695,10 @@ def atom37_to_torsion_angles_(protein, prefix="", bb_angles=True):   # return an
 
     if random.random() > 0.5:
         chi_is_ambiguous = torsion_angles.new_tensor(rc.chi_pi_periodic)[aatype, ...]   # (L, 4)
-        if bb_angles:
+        if all_angles:
             mirror_torsion_angles = torch.cat([all_atom_mask.new_ones(*aatype.shape, 3), 1.0 - 2.0 * chi_is_ambiguous], dim=-1)  # (L, 7)
         else:
-            mirror_torsion_angles = 1.0 - 2.0 * chi_is_ambiguous
+            mirror_torsion_angles = torch.cat([all_atom_mask.new_ones(*aatype.shape, 1), 1.0 - 2.0 * chi_is_ambiguous], dim=-1)  # (L, 5)
         alt_torsion_angles = (torsion_angles * mirror_torsion_angles)
         protein[prefix + "torsion_angles"] = alt_torsion_angles % (2 * torch.pi)
     else:

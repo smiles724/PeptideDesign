@@ -99,13 +99,13 @@ When you run the code, it will automatically process the data and produce `pep_p
 The command to run co-design training is the following, 
 ```bash
 # pretrain 
-python -W ignore multiflow/experiments/train_se3_flows.py -cn pdb_codesign
+python -W ignore dflow/experiments/train_se3_flows.py -cn pdb_codesign
 
 # peptide training (1 GPU)
-python -W ignore multiflow/experiments/train_pep_flows.py
+python -W ignore dflow/experiments/train_pep_flows.py
 
 # DDP peptide training (e.g., 4 GPUs)
-torchrun --nproc_per_node=4 multiflow/experiments/train_pep_flows.py   
+torchrun --nproc_per_node=4 dflow/experiments/train_pep_flows.py   
 
 ```
 We use [Hydra](https://hydra.cc/) to maintain our configs. 
@@ -129,7 +129,7 @@ unzip model_weights.zip
 The following three tasks can be performed. 
 ```bash
 # Unconditional Co-Design
-python -W ignore multiflow/experiments/inference_pep.py 
+python -W ignore dflow/experiments/inference_pep.py 
 ```
 
 ### Configs
