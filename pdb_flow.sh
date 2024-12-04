@@ -15,7 +15,7 @@
 
 # Activate your conda environment if needed
 source /opt/conda/etc/profile.d/conda.sh
-conda activate multiflow   # Replace with your actual conda environment
+conda activate dflow   # Replace with your actual conda environment
 
 # Run the Python script
 python -W ignore dflow/experiments/train_se3_flows.py -cn pdb_codesign

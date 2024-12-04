@@ -66,8 +66,8 @@ sample:
   ckpt_path: dflow.pt
   output: ./pep_output
   device: cuda
-  num_steps: 50   # increase steps will be slightly better
-  num_samples: 16
+  num_steps: 200   # increase steps will be slightly better
+  num_samples: 64
   angle_purify: True
   llm: False
   x_mirror: False

@@ -39,7 +39,7 @@ def main(cfg: DictConfig):
     model = PepModel(cfg.model).to(device)
     ckpt = torch.load(sam_cfg.ckpt_path, map_location=device)
     print(f'Loading model successfully from {sam_cfg.ckpt_path}')
-    model.load_state_dict(process_dic(ckpt['model']))
+    model.load_state_dict(process_dic(ckpt['model']), strict=False)
     model.eval()
 
     dic = {'id': [], 'len': [], 'tran': [], 'best_aar': [], 'avg_aar': [], 'rot': []}
@@ -78,31 +78,31 @@ def main(cfg: DictConfig):
         torch.cuda.empty_cache()
         gc.collect()
 
-        # # meta data
-        # samples = traj_1[-1]
-        # batch = recursive_to(batch, 'cpu')
-        # chain_id = [list(item) for item in zip(*batch['chain_id'])][0]  # fix chain id in collate func
-        # icode = [' ' for _ in range(len(chain_id))]  # batch icode have same problem
-        # nums = len(batch['id'])
-        # if samples['angles'].shape[-1] == 7:
-        #     samples['angles'] = samples['angles'][..., 2:]
-        # pos_ha, _, _ = full_atom_reconstruction(R_bb=samples['rotmats'], t_bb=samples['trans'], angles=samples['angles'], aa=samples['seqs'])  # (32,L,14,3), instead of 15, ignore OXT masked
-        # pos_ha = F.pad(pos_ha, pad=(0, 0, 0, 15 - 14), value=0.)  # (32,L,A,3) pos14 A=14
-        # pos_new = torch.where(batch['generate_mask'][:, :, None, None], pos_ha, batch['pos_heavyatom'])
-        # mask_new = get_heavyatom_mask(samples['seqs'])
-        # aa_new = samples['seqs']
-        # if sam_cfg.x_mirror:  # inverse back
-        #     pos_new[..., 0] *= -1
-        #     batch['pos_heavyatom'][..., 0] *= -1
-        #
-        # os.makedirs(f'{save_path}/{name}/', exist_ok=True)
-        # for j in range(nums):
-        #     data_saved = {'chain_nb': batch['chain_nb'][0], 'chain_id': chain_id, 'resseq': batch['resseq'][0], 'icode': icode, 'aa': aa_new[j], 'mask_heavyatom': mask_new[j],
-        #                   'pos_heavyatom': pos_new[j], }
-        #     save_pdb(data_saved, path=f'{save_path}/{name}/sample_{j}.pdb')
-        # gt_data = {'chain_nb': batch['chain_nb'][0], 'chain_id': chain_id, 'resseq': batch['resseq'][0], 'icode': icode, 'aa': batch['aa'][0],
-        #            'mask_heavyatom': batch['mask_heavyatom'][0], 'pos_heavyatom': batch['pos_heavyatom'][0], }
-        # save_pdb(gt_data, path=f'{save_path}/{name}/gt.pdb')
+        # meta data
+        samples = traj_1[-1]
+        batch = recursive_to(batch, 'cpu')
+        chain_id = [list(item) for item in zip(*batch['chain_id'])][0]  # fix chain id in collate func
+        icode = [' ' for _ in range(len(chain_id))]  # batch icode have same problem
+        nums = len(batch['id'])
+        if samples['angles'].shape[-1] == 7:
+            samples['angles'] = samples['angles'][..., 2:]
+        pos_ha, _, _ = full_atom_reconstruction(R_bb=samples['rotmats'], t_bb=samples['trans'], angles=samples['angles'], aa=samples['seqs'])  # (32,L,14,3), instead of 15, ignore OXT masked
+        pos_ha = F.pad(pos_ha, pad=(0, 0, 0, 15 - 14), value=0.)  # (32,L,A,3) pos14 A=14
+        pos_new = torch.where(batch['generate_mask'][:, :, None, None], pos_ha, batch['pos_heavyatom'])
+        mask_new = get_heavyatom_mask(samples['seqs'])
+        aa_new = samples['seqs']
+        if sam_cfg.x_mirror:  # inverse back
+            pos_new[..., 0] *= -1
+            batch['pos_heavyatom'][..., 0] *= -1
+
+        os.makedirs(f'{save_path}/{name}/', exist_ok=True)
+        for j in range(nums):
+            data_saved = {'chain_nb': batch['chain_nb'][0], 'chain_id': chain_id, 'resseq': batch['resseq'][0], 'icode': icode, 'aa': aa_new[j], 'mask_heavyatom': mask_new[j],
+                          'pos_heavyatom': pos_new[j], }
+            save_pdb(data_saved, path=f'{save_path}/{name}/sample_{j}.pdb')
+        gt_data = {'chain_nb': batch['chain_nb'][0], 'chain_id': chain_id, 'resseq': batch['resseq'][0], 'icode': icode, 'aa': batch['aa'][0],
+                   'mask_heavyatom': batch['mask_heavyatom'][0], 'pos_heavyatom': batch['pos_heavyatom'][0], }
+        save_pdb(gt_data, path=f'{save_path}/{name}/gt.pdb')
 
     dic = pd.DataFrame(dic)
     dic.to_csv(f'{save_path}/outputs.csv', index=None)
