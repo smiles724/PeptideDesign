@@ -132,8 +132,6 @@ python -W ignore dflow/experiments/inference_pep.py
 ```
 If you want to generate d-peptides, please set `x_mirror` to `True` in `dflow/configs/pep_codesign.yaml`. 
 
-If you have any questions, please contact [fangwu97@stanford.edu]. Thank you! :)
-
 ## Cite and Contact
 If you find this paper and the corresponding code interesting and helpful, we would really appreciate it if you can cite the paper. Thank you! 😜
 Moreover, we welcome any sort of relevant questions. If you have any questions, please contact [fangwu97@stanford.edu]. Thank you! :)
