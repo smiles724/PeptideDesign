@@ -97,7 +97,7 @@ When you run the code, it will automatically process the data and produce `pep_p
 
 
 ## Training
-The command to run co-design training is the following, 
+The command to run the co-design training is the following, 
 ```bash
 # pretrain 
 python -W ignore dflow/experiments/train_se3_flows.py -cn pdb_codesign
@@ -113,7 +113,7 @@ We use [Hydra](https://hydra.cc/) to maintain our configs.
 The training config is found here `multiflow/configs/pdb_codesign.yaml`.
 
 Most important fields:
-* `experiment.num_devices`: Number of GPUs to use for training. Default is 2.
+* `experiment.num_devices`: Number of GPUs to use for training. The default is 2.
 * `data.sampler.max_batch_size`: Maximum batch size. We use dynamic batch sizes depending on `data.sampler.max_num_res_squared`. Both these parameters need to be tuned for your GPU memory. Our default settings are set for a 40GB Nvidia RTX card.
 * `data.sampler.max_num_res_squared`: See above.
 
@@ -133,7 +133,7 @@ python -W ignore dflow/experiments/inference_pep.py
 If you want to generate d-peptides, please set `x_mirror` to `True` in `dflow/configs/pep_codesign.yaml`. 
 
 ## Cite and Contact
-If you find this paper and the corresponding code interesting and helpful, we would really appreciate it if you can cite the paper. Thank you! 😜
+If you find this paper and the corresponding code interesting and helpful, we would really appreciate it if you could cite the paper.  
 Moreover, we welcome any sort of relevant questions. If you have any questions, please contact [fangwu97@stanford.edu]. Thank you! :)
 ```markdown
 @article{wu2024d,
