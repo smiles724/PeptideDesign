@@ -1,15 +1,16 @@
-import setuptools as tools
+from setuptools import find_namespace_packages, setup
 
-tools.setup(
+
+setup(
     name="dflow",
-    packages=[
-        'openfold',
-        'dflow',
-        'ProteinMPNN'
-    ],
-    package_dir={
-        'openfold': './openfold',
-        'dflow': './dflow',
-        'ProteinMPNN': './ProteinMPNN',
+    packages=find_namespace_packages(
+        include=("dflow", "dflow.*", "openfold", "openfold.*", "ProteinMPNN", "ProteinMPNN.*"),
+        exclude=("*.configs",),
+    ),
+    package_data={
+        "dflow": ["configs/*.yaml"],
+        "openfold.resources": ["stereo_chemical_props.txt"],
+        "ProteinMPNN": ["LICENSE"],
+        "ProteinMPNN.training": ["LICENSE"],
     },
 )

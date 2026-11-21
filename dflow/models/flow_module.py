@@ -294,6 +294,8 @@ class FlowModule(LightningModule):
         if len(self.validation_epoch_samples) > 0:
             self.logger.log_table(key='valid/samples', columns=["sample_path", "global_step", "Protein"], data=self.validation_epoch_samples)
             self.validation_epoch_samples.clear()
+        if not self.validation_epoch_metrics:
+            return
         val_epoch_metrics = pd.concat(self.validation_epoch_metrics)
         for metric_name, metric_val in val_epoch_metrics.mean().to_dict().items():
             self._log_scalar(f'valid/{metric_name}', metric_val, on_step=False, on_epoch=True, prog_bar=False, batch_size=len(val_epoch_metrics), )

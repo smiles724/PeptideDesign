@@ -1,70 +1,45 @@
-# Full-atom d-peptide co-design with flow matching
+# D-Flow · PeptideDesign
 
-Our codebase is developed on top of [FrameFlow](https://github.com/microsoft/frame-flow), [MultiFlow](https://github.com/jasonkyuyim/multiflow), 
-[PepFlow](https://github.com/Ced3-han/PepFlowww), and [ByProt](https://github.com/BytedProtein/ByProt).
+Research code accompanying *D-Flow: Multi-modality Flow Matching for D-peptide Design*.
 
-<p align="center"><img src="dflow.png" alt="drawing" width="900"/></p>
+[Original preprint (v1)](https://arxiv.org/abs/2411.10618v1) · [Revised paper (v4)](https://arxiv.org/abs/2411.10618v4) · [Repository layout](#repository-layout) · [Citation](#citation)
 
-## Installation
+![Overview of the D-Flow architecture](dflow.png)
 
-### Step 1: Set Up the Environment
+## Repository layout
+
+- [`dflow/`](dflow/) contains the project source and experiment configurations.
+- [`openfold/`](openfold/) and [`ProteinMPNN/`](ProteinMPNN/) contain bundled upstream code.
+- [`env.yml`](env.yml) and [`multiflow.yml`](multiflow.yml) record historical environments.
+- [`setup.py`](setup.py) defines the Python distribution, including nested packages, configuration files, and the OpenFold resource file.
+
+## Installation and package checks
+
+Run package checks from the repository root in an isolated environment. The following builds the Python wheel and lists its contents.
+
 ```bash
-# Create and activate a conda environment with dependencies
-conda env create -f env.yml
-conda activate dflow
-
-# Install the local package
-pip install -e .
-
-# Additional dependencies
-pip install easydict lmdb
-```
-### Step 2: Install torch-scatter
-Manually install `torch-scatter` based on your PyTorch version. For PyTorch `2.4.1` and CUDA `12.1` (H100 GPUs), run:
-```bash
-pip install torch-scatter -f https://data.pyg.org/whl/torch-2.4.1+cu121.html
-```
-For other versions, find your PyTorch version with:
-```bash
-# Find your installed version of torch
-python
->>> import torch
->>> torch.__version__
-# Example: torch 2.4.1+cu121
+python -m pip install build
+python -m build --wheel
+python -m zipfile -l dist/dflow-0.0.0-py3-none-any.whl
 ```
 
-> [!WARNING]  
-> If you encounter the error below from DeepSpeed:
-> ```bash
-> ModuleNotFoundError: No module named 'torch._six'
-> ```
-> Replace `from torch._six import inf` with `from torch import inf`in these files: 
-> * `/path/to/envs/site-packages/deepspeed/runtime/utils.py`
-> * `/path/to/envs/site-packages/deepspeed/runtime/zero/stage_1_and_2.py`
-> where `/path/to/envs` is your path. 
+The wheel should include `dflow/`, `openfold/`, and `ProteinMPNN/`, along with `openfold/resources/stereo_chemical_props.txt`. This check covers the distribution contents. Runtime dependencies are managed separately.
 
-## Data
-### Pretraining Datasets
+## Historical environments
 
-Pretrain datasets are host on Zenodo [here](https://zenodo.org/records/10714631?token=eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjJjMTk2YjlmLTM4OTUtNGVhYi1hODcxLWE1ZjExOTczY2IzZiIsImRhdGEiOnt9LCJyYW5kb20iOiI4MDY5ZDUzYjVjMTNhNDllMDYxNmI3Yjc2NjcwYjYxZiJ9.C2eZZmRu-nu7H330G-DkV5kttfjYB3ANozdOMNm19uPahvtLrDRvd_4Eqlyb7lp24m06e4OHhHQ4zlj68S1O_A).
-Download the following files,
-* `real_train_set.tar.gz` (2.5 GB)
-* `synthetic_train_set.tar.gz` (220 MB)
-* `test_set.tar.gz` (347 MB)
+The environment YAML files are Linux/CUDA snapshots. In `env.yml`, the Conda section specifies CUDA 11.7 while the pip section pins PyTorch and torch-scatter builds for CUDA 12.1. Those pins need a consistent runtime to reproduce the environment. Check the installed PyTorch and CUDA build with:
 
-Next, untar the files
 ```bash
-# Uncompress training data
-mkdir train_set
-tar -xzvf real_train_set.tar.gz -C train_set/
-tar -xzvf synthetic_train_set.tar.gz -C train_set/
-
-# Uncompress test data
-mkdir test_set
-tar -xzvf test_set.tar.gz -C test_set/
+python -c "import torch; print(torch.__version__, torch.version.cuda)"
 ```
-The resulting directory structure should look like
-```bash
+
+The archived DeepSpeed version can encounter a missing `torch._six` on newer PyTorch releases. Treat that error as a dependency compatibility issue and keep dependency changes in the environment definition.
+
+## Data references
+
+The original documentation references a pretraining archive and the PepMerge release. Check data access with the repository maintainers. The pretraining snapshot used this repository-relative layout.
+
+```text
 <current_dir>
 ├── train_set
 │   ├── processed_pdb
@@ -78,68 +53,29 @@ The resulting directory structure should look like
 |   |   |   └── <protein_id>.pkl
 ...
 ```
-Our experiments read the data by using relative paths. Keep the directory structure like this to avoid bugs.
 
-### PepMerge Dataset
-PepMerge dataset is available on Google Drive [here](https://drive.google.com/drive/folders/1bHaKDF3uCDPtfsihjZs0zmjwF6UU1uVl?usp=sharing).
-Downloading the following files:
-+ `PepMerge_release.zip` (1.2GB)
+PepMerge contains peptide–receptor examples collected from [PepBDB](http://huanglab.phys.hust.edu.cn/pepbdb/db/1cta_A/) and [Q-BioLiP](https://yanglab.qd.sdu.edu.cn/Q-BioLiP/Download), with structure and sequence files in the release.
 
-The ```PepMerge_release.zip``` contains filtered data of peptide-receptor pairs, which is collected from 
-[PepBDB](http://huanglab.phys.hust.edu.cn/pepbdb/db/1cta_A/) and [QBioLip](https://yanglab.qd.sdu.edu.cn/Q-BioLiP/Download). 
-For example, in the folder ```1a0n_A```, the ```P``` chain in the PDB file ```1a0n``` is the peptide. 
-In each sub-folder, FASTA and PDB files of the peptide and receptor are given. 
-The postfix _merge means the peptide and receptor are in the same PDB file. 
-The binding pocket of the receptor is also provided, where our model is trained to generate peptides based on the binding pocket.
-When you run the code, it will automatically process the data and produce `pep_pocket_train_structure_cache.lmdb` and 
-`pep_pocket_test_structure_cache.lmdb` in the default cache folder (i.e., `../pep_cache/`).
+## Code and paper versions
 
+The last tracked update to the model source directories and bundled checkpoint archive before the packaging changes was commit [`dbe6487`](https://github.com/smiles724/PeptideDesign/commit/dbe6487) on December 3, 2024. This places the code snapshot near the original November 2024 preprint. The repository has no release tag pairing that snapshot with a specific paper revision. The May 2026 revision has a different author list and should be treated as a separate citation.
 
+## Citation
 
-## Training
-The command to run the co-design training is the following, 
-```bash
-# pretrain 
-python -W ignore dflow/experiments/train_se3_flows.py -cn pdb_codesign
+The BibTeX below cites the May 2026 revision. For the original author list and citation, see [arXiv v1](https://arxiv.org/abs/2411.10618v1).
 
-# peptide training (1 GPU)
-python -W ignore dflow/experiments/train_pep_flows.py
-
-# DDP peptide training (e.g., 4 GPUs)
-torchrun --nproc_per_node=4 dflow/experiments/train_pep_flows.py   
-
-```
-We use [Hydra](https://hydra.cc/) to maintain our configs. 
-The training config is found here `multiflow/configs/pdb_codesign.yaml`.
-
-Most important fields:
-* `experiment.num_devices`: Number of GPUs to use for training. The default is 2.
-* `data.sampler.max_batch_size`: Maximum batch size. We use dynamic batch sizes depending on `data.sampler.max_num_res_squared`. Both these parameters need to be tuned for your GPU memory. Our default settings are set for a 40GB Nvidia RTX card.
-* `data.sampler.max_num_res_squared`: See above.
-
-
-## Inference
-
-Unpack the provided model weights:
-```bash
-unzip dlow.zip
-```
-
-The following generation task can be performed. 
-```bash
-# Unconditional Co-Design
-python -W ignore dflow/experiments/inference_pep.py 
-```
-If you want to generate d-peptides, please set `x_mirror` to `True` in `dflow/configs/pep_codesign.yaml`. 
-
-## Cite and Contact
-If you find this paper and the corresponding code interesting and helpful, we would really appreciate it if you could cite the paper.  
-Moreover, we welcome any sort of relevant questions. If you have any questions, please contact [fangwu97@stanford.edu]. Thank you! :)
-```markdown
+```bibtex
 @article{wu2024d,
-  title={D-Flow: Multi-modality Flow Matching for D-peptide Design},
-  author={Wu, Fang and Xu, Tinson and Jin, Shuting and Tang, Xiangru and Xu, Zerui and Zou, James and Hie, Brian},
-  journal={arXiv preprint arXiv:2411.10618},
-  year={2024}
+  title = {D-Flow: Multi-modality Flow Matching for {D}-peptide Design},
+  author = {Wu, Fang and Jin, Shuting and Tang, Xiangru and Xu, Junlin and Gerstein, Mark and Zou, James},
+  journal = {arXiv preprint arXiv:2411.10618v4},
+  year = {2026},
+  url = {https://arxiv.org/abs/2411.10618v4}
 }
 ```
+
+## Acknowledgments
+
+D-Flow builds on [FrameFlow](https://github.com/microsoft/frame-flow), [MultiFlow](https://github.com/jasonkyuyim/multiflow), [PepFlow](https://github.com/Ced3-han/PepFlowww), and [ByProt](https://github.com/BytedProtein/ByProt).
+
+For questions, contact [Fang Wu](mailto:fangwu97@stanford.edu).
