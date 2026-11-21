@@ -294,12 +294,31 @@ class FlowModule(LightningModule):
         if len(self.validation_epoch_samples) > 0:
             self.logger.log_table(key='valid/samples', columns=["sample_path", "global_step", "Protein"], data=self.validation_epoch_samples)
             self.validation_epoch_samples.clear()
-        if not self.validation_epoch_metrics:
-            return
-        val_epoch_metrics = pd.concat(self.validation_epoch_metrics)
-        for metric_name, metric_val in val_epoch_metrics.mean().to_dict().items():
-            self._log_scalar(f'valid/{metric_name}', metric_val, on_step=False, on_epoch=True, prog_bar=False, batch_size=len(val_epoch_metrics), )
+        local_metrics = (
+            pd.concat(self.validation_epoch_metrics) if self.validation_epoch_metrics else pd.DataFrame()
+        )
         self.validation_epoch_metrics.clear()
+        local_summary = (len(local_metrics), local_metrics.sum().to_dict(), local_metrics.count().to_dict())
+
+        # Every rank participates, including ranks with no validation rows.
+        summaries = [local_summary]
+        if dist.is_initialized():
+            summaries = [None] * dist.get_world_size()
+            dist.all_gather_object(summaries, local_summary)
+            if dist.get_rank() != 0:
+                return
+
+        row_counts, metric_sums, metric_counts = zip(*summaries)
+        total_rows = sum(row_counts)
+        if not total_rows:
+            return
+        totals = pd.DataFrame(metric_sums).sum()
+        counts = pd.DataFrame(metric_counts).sum()
+        for metric_name, metric_val in (totals / counts).items():
+            self._log_scalar(
+                f'valid/{metric_name}', metric_val, on_step=False, on_epoch=True,
+                prog_bar=False, batch_size=total_rows,
+            )
 
     def _log_scalar(self, key, value, on_step=True, on_epoch=False, prog_bar=True, batch_size=None, sync_dist=False, rank_zero_only=True):
         if sync_dist and rank_zero_only:
