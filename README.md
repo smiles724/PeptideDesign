@@ -2,7 +2,7 @@
 
 Research code accompanying *D-Flow: Multi-modality Flow Matching for D-peptide Design*.
 
-[Original preprint (v1)](https://arxiv.org/abs/2411.10618v1) · [Revised paper (v4)](https://arxiv.org/abs/2411.10618v4) · [Repository layout](#repository-layout) · [Citation](#citation)
+[Revised paper (v4)](https://arxiv.org/abs/2411.10618v4) · [Repository layout](#repository-layout) · [Citation](#citation)
 
 ![Overview of the D-Flow architecture](dflow.png)
 
@@ -56,21 +56,15 @@ The original documentation references a pretraining archive and the PepMerge rel
 
 PepMerge contains peptide–receptor examples collected from [PepBDB](http://huanglab.phys.hust.edu.cn/pepbdb/db/1cta_A/) and [Q-BioLiP](https://yanglab.qd.sdu.edu.cn/Q-BioLiP/Download), with structure and sequence files in the release.
 
-## Code and paper versions
-
-The last tracked update to the model source directories and bundled checkpoint archive before the packaging changes was commit [`dbe6487`](https://github.com/smiles724/PeptideDesign/commit/dbe6487) on December 3, 2024. This places the code snapshot near the original November 2024 preprint. The repository has no release tag pairing that snapshot with a specific paper revision. The May 2026 revision has a different author list and should be treated as a separate citation.
-
 ## Citation
 
-The BibTeX below cites the May 2026 revision. For the original author list and citation, see [arXiv v1](https://arxiv.org/abs/2411.10618v1).
-
 ```bibtex
-@article{wu2024d,
-  title = {D-Flow: Multi-modality Flow Matching for {D}-peptide Design},
-  author = {Wu, Fang and Jin, Shuting and Tang, Xiangru and Xu, Junlin and Gerstein, Mark and Zou, James},
-  journal = {arXiv preprint arXiv:2411.10618v4},
-  year = {2026},
-  url = {https://arxiv.org/abs/2411.10618v4}
+@article{wu2026d,
+  title={D-flow: Multi-modality flow matching for d-peptide design},
+  author={Wu, Fang and Jin, Shuting and Tang, Xiangru and Xu, Junlin and Gerstein, Mark and Li, Li Erran and Zou, James},
+  journal={IEEE Journal of Biomedical and Health Informatics},
+  year={2026},
+  publisher={IEEE}
 }
 ```
 
